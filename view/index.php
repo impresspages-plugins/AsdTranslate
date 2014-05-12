@@ -24,8 +24,12 @@
                 <?php endif; ?>
             </ul>
         </div>
-        <?php if( !empty( $results ) ): ?>
+        
             <div class="col col-xs-6">
+                <?php if( !empty( $writable ) ): ?>
+                    <p class="alert alert-danger"><?php echo $writable; ?></p>
+                <?php endif; ?>
+                <?php if( !empty( $results ) ): ?>
                 <table class="table">
                     <thead>
                         <tr>
@@ -39,13 +43,20 @@
                         <tr>
                             <td><?php echo $translate; ?></td>
                             <td>
-                                <?php echo ipSlot( 'translate', array( 'translate' => $translate, 'translation' => $translation, 'type' => $type, 'name' => $query[$type], 'language' => $query['language'] ) );?>
+                                <?php if( empty( $writable ) ): ?>
+                                    <?php echo ipSlot( 'translate', array( 'translate' => $translate, 'translation' => $translation, 'type' => $type, 'name' => $query[$type], 'language' => $query['language'] ) );?>
+                                <?php else: ?>
+                                    <?php echo $translation; ?>
+                                <?php endif; ?>
                             </td>
                         </tr>
                     <?php endforeach; ?>
                     </tbody>
                 </table>
+                <?php else: ?>
+                    <p class="alert alert-warning"><?php echo __( "Didn't find any translatable strings", 'AsdTranslate' ); ?></p>
+                <?php endif; ?>
             </div>
-        <?php endif; ?>
+        
     <?php endif; ?>
 </div>
