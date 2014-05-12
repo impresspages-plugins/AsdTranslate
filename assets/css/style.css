@@ -1,0 +1,14 @@
+.ipPluginAsdTranslate ul {
+    list-style: none;
+    
+}
+.ipPluginAsdTranslate ul li.title {
+    font-weight: bold;
+}
+.ipPluginAsdTranslate ul li a {
+    display: block;
+    padding: 3px 5px;
+}
+.ipPluginAsdTranslate ul li.active a {
+    background-color: #F1F1F1;
+}
