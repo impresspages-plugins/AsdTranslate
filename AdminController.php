@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Admin controller for ImpressPages
- */
-
 namespace Plugin\AsdTranslate;
 
 class AdminController extends \Ip\Controller {
@@ -13,17 +9,19 @@ class AdminController extends \Ip\Controller {
         if( !empty( $data['query']['language'] ) ) {
             if( !empty( $data['query']['plugin'] ) ) {
                 $dir = ipFile( 'Plugin/'.$data['query']['plugin'] );
-                $files = Model::get_files( $dir );
-                $found = Model::get_scan_files( $files, $data['query']['plugin'] );
-                $currentTranslation = Model::get_current_plugin_translation( $data['query']['plugin'], $data['query']['language'] );
-                 $data['results'] = array_merge( $found, $currentTranslation );
-            }
-            if( !empty( $data['query']['theme'] ) ) {
+                $name = $data['query']['plugin'];
+                $type = 'Plugin';
+            } elseif( !empty( $data['query']['theme'] ) ) {
                 $dir = ipFile( 'Theme/'.$data['query']['theme'] );
+                $name = $data['query']['theme'];
+                $type = 'Theme';
+            }
+            if( !empty( $type ) ) {
                 $files = Model::get_files( $dir );
-                $found = Model::get_scan_files( $files, $data['query']['theme'] );
-                $currentTranslation = Model::get_current_theme_translation( $data['query']['theme'], $data['query']['language'] );
+                $found = Model::get_scan_files( $files, $name );
+                $currentTranslation = Model::get_current_translation( $name, $data['query']['language'], $type );
                 $data['results'] = array_merge( $found, $currentTranslation );
+                $data['writable'] = Model::is_writable( $name, $data['query']['language'] );
             }
         }
         $data['plugins'] = Model::get_all_plugins();
@@ -35,15 +33,14 @@ class AdminController extends \Ip\Controller {
     public function saveTranslation() {
         $data = ipRequest()->getPost();
         if( $data['type'] == 'theme' ) {
-            $currentTranslation = Model::get_current_theme_translation( $data['name'], $data['language'] );
+            $currentTranslation = Model::get_current_translation( $data['name'], $data['language'], 'Theme' );
             $currentTranslation[$data['translate']] = $data['translation'];
             Model::save_translation( $currentTranslation, $data['name'], $data['language'] );
         } elseif( $data['type'] == 'plugin' ) {
-            $currentTranslation = Model::get_current_plugin_translation( $data['name'], $data['language'] );
+            $currentTranslation = Model::get_current_translation( $data['name'], $data['language'], 'Plugin' );
             $currentTranslation[$data['translate']] = $data['translation'];
             Model::save_translation( $currentTranslation, $data['name'], $data['language'] );
         }
         return new \Ip\Response\Json($currentTranslation);
     }
-    
 }
