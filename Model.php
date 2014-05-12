@@ -4,7 +4,6 @@
  */
 namespace Plugin\AsdTranslate;
 
-
 class Model {
     public static function get_all_plugins() {
         $table = ipTable('plugin');
@@ -16,40 +15,40 @@ class Model {
         return $returnData;
     }
     
+    public static function is_writable( $name, $language ) {
+        $overrideDirPath = ipFile( "file/translations/override" );
+        $overridedFilePath = $overrideDirPath . "/{$name}-{$language}.json";
+        if( file_exists( $overridedFilePath ) ) {
+            if( is_writable( $overridedFilePath ) ) {
+                return null;
+            } else {
+                return sprintf( __( 'File "%s" must be writeable.', 'AsdTranslate' ), $overridedFilePath );
+            }
+        } elseif( is_writable( $overrideDirPath ) ) {
+            return null;
+        } else {
+            return sprintf( __( 'Directory "%s" must be writeable.', 'AsdTranslate' ), $overrideDirPath );
+        }
+    }
+    
     public static function save_translation( $translation, $name, $language ) {
         $overridedFilePath = ipFile( "file/translations/override/{$name}-{$language}.json" );
         file_put_contents($overridedFilePath, json_encode($translation) );
     }
     
-    public static function get_current_theme_translation( $theme, $language ) {
-        $themeFile = ipFile( "Theme/{$theme}/translations/{$theme}-{$language}.json" );
+    public static function get_current_translation( $theme, $language, $type ) {
+        $translationFile = ipFile( "{$type}/{$theme}/translations/{$theme}-{$language}.json" );
         $overridedFile = ipFile( "file/translations/override/{$theme}-{$language}.json" );
-        $themeTranslations = $overridedTranslations = $translations = array();
-        if( file_exists( $themeFile ) ) {
-            $themeJson = file_get_contents( $themeFile );
-            $themeTranslations = \Ip\Internal\Design\Helper::instance()->json_clean_decode( $themeJson, true );
+        $originalTranslations = $overridedTranslations = $translations = array();
+        if( file_exists( $translationFile ) ) {
+            $originalJson = file_get_contents( $translationFile );
+            $originalTranslations = \Ip\Internal\Design\Helper::instance()->json_clean_decode( $originalJson, true );
         }
         if( file_exists( $overridedFile ) ) {
             $overridedJson = file_get_contents( $overridedFile );
             $overridedTranslations = \Ip\Internal\Design\Helper::instance()->json_clean_decode( $overridedJson, true );
         }
-        $translations = array_merge( $themeTranslations, $overridedTranslations );
-        return $translations;
-    }
-    
-    public static function get_current_plugin_translation( $name, $language ) {
-        $themeFile = ipFile( "Plugin/{$name}/translations/{$name}-{$language}.json" );
-        $overridedFile = ipFile( "file/translations/override/{$name}-{$language}.json" );
-        $themeTranslations = $overridedTranslations = $translations = array();
-        if( file_exists( $themeFile ) ) {
-            $themeJson = file_get_contents( $themeFile );
-            $themeTranslations = \Ip\Internal\Design\Helper::instance()->json_clean_decode( $themeJson, true );
-        }
-        if( file_exists( $overridedFile ) ) {
-            $overridedJson = file_get_contents( $overridedFile );
-            $overridedTranslations = \Ip\Internal\Design\Helper::instance()->json_clean_decode( $overridedJson, true );
-        }
-        $translations = array_merge( $themeTranslations, $overridedTranslations );
+        $translations = array_merge( $originalTranslations, $overridedTranslations );
         return $translations;
     }
     
@@ -91,7 +90,7 @@ class Model {
     public static function get_scan_files( $files, $name = null ) {
         $translates = array();
         if( !empty( $files ) ) {
-            $patern = "/__\(\s?'(.*?)'\s?,\s?'{$name}'\s?\)/";
+            $patern = '/__\(\s?(?:"|\')(.*?)(?:"|\')\s?,\s?(?:"|\')'.$name.'(?:"|\')\s?(?:\s?,\s?false\s?)?\)/';
             foreach( $files as $file ) {
                 $handle = @fopen($file, "r");
                 if ($handle) {
