@@ -24,39 +24,37 @@
                 <?php endif; ?>
             </ul>
         </div>
-        
-            <div class="col col-xs-6">
-                <?php if( !empty( $writable ) ): ?>
-                    <p class="alert alert-danger"><?php echo $writable; ?></p>
-                <?php endif; ?>
-                <?php if( !empty( $results ) ): ?>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th><?php echo __( 'String', 'AsdTranslate' ); ?></th>
-                            <th><?php echo __( 'Current translation', 'AsdTranslate' ); ?></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    <?php if( !empty( $query['theme'] ) ) { $type = 'theme'; } elseif(  $query['plugin'] ) { $type = 'plugin'; }  ?>
-                    <?php foreach( $results as $translate => $translation ): ?>
-                        <tr>
-                            <td><?php echo $translate; ?></td>
-                            <td>
-                                <?php if( empty( $writable ) ): ?>
-                                    <?php echo ipSlot( 'translate', array( 'translate' => $translate, 'translation' => $translation, 'type' => $type, 'name' => $query[$type], 'language' => $query['language'] ) );?>
-                                <?php else: ?>
-                                    <?php echo $translation; ?>
-                                <?php endif; ?>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                    </tbody>
-                </table>
-                <?php else: ?>
-                    <p class="alert alert-warning"><?php echo __( "Didn't find any translatable strings", 'AsdTranslate' ); ?></p>
-                <?php endif; ?>
-            </div>
-        
+        <div class="col col-xs-6">
+            <?php if( !empty( $query['theme'] ) ) { $type = 'theme'; } elseif( !empty( $query['plugin'] ) ) { $type = 'plugin'; } else { $type = null; }  ?>
+            <?php if( !empty( $writable ) ): ?>
+                <p class="alert alert-danger"><?php echo $writable; ?></p>
+            <?php endif; ?>
+            <?php if( !empty( $results ) ): ?>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th><?php echo __( 'String', 'AsdTranslate' ); ?></th>
+                        <th><?php echo __( 'Current translation', 'AsdTranslate' ); ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php foreach( $results as $translate => $translation ): ?>
+                    <tr>
+                        <td><?php echo $translate; ?></td>
+                        <td>
+                            <?php if( empty( $writable ) ): ?>
+                                <?php echo ipSlot( 'translate', array( 'translate' => $translate, 'translation' => $translation, 'type' => $type, 'name' => $query[$type], 'language' => $query['language'] ) );?>
+                            <?php else: ?>
+                                <?php echo $translation; ?>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+            <?php elseif( !empty( $type ) ): ?>
+                <p class="alert alert-warning"><?php echo __( "Didn't find any translatable strings", 'AsdTranslate', false ); ?></p>
+            <?php endif; ?>
+        </div>
     <?php endif; ?>
 </div>
