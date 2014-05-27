@@ -22,6 +22,11 @@ class AdminController extends \Ip\Controller {
                 $currentTranslation = Model::get_current_translation( $name, $data['query']['language'], $type );
                 $data['results'] = array_merge( $found, $currentTranslation );
                 $data['writable'] = Model::is_writable( $name, $data['query']['language'] );
+            } elseif(!empty($data['query']['ip'])) {
+                $found = Model::get_current_translation( 'Ip', $data['query']['language'], null, 'original' );
+                $currentTranslation = Model::get_current_translation( 'Ip', $data['query']['language'], null, 'override' );
+                $data['results'] = array_merge( $found, $currentTranslation );
+                $data['writable'] = Model::is_writable( 'Ip', $data['query']['language'] );
             }
         }
         $data['plugins'] = Model::get_all_plugins();
@@ -30,6 +35,7 @@ class AdminController extends \Ip\Controller {
         $renderedHtml = ipView('view/index.php', $data )->render();
         return $renderedHtml;
     }
+    
     public function saveTranslation() {
         $data = ipRequest()->getPost();
         if( $data['type'] == 'theme' ) {
@@ -40,6 +46,10 @@ class AdminController extends \Ip\Controller {
             $currentTranslation = Model::get_current_translation( $data['name'], $data['language'], 'Plugin' );
             $currentTranslation[$data['translate']] = $data['translation'];
             Model::save_translation( $currentTranslation, $data['name'], $data['language'] );
+        } elseif( $data['type'] == 'ip' ) {
+            $currentTranslation = Model::get_current_translation( 'Ip', $data['language'], null, 'override' );
+            $currentTranslation[$data['translate']] = $data['translation'];
+            Model::save_translation( $currentTranslation, 'Ip', $data['language'] );
         }
         return new \Ip\Response\Json($currentTranslation);
     }

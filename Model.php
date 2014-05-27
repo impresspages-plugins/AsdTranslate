@@ -36,9 +36,9 @@ class Model {
         file_put_contents($overridedFilePath, json_encode($translation) );
     }
     
-    public static function get_current_translation( $theme, $language, $type ) {
+    public static function get_current_translation( $theme, $language, $type, $fold = 'override' ) {
         $translationFile = ipFile( "{$type}/{$theme}/translations/{$theme}-{$language}.json" );
-        $overridedFile = ipFile( "file/translations/override/{$theme}-{$language}.json" );
+        $overridedFile = ipFile( "file/translations/{$fold}/{$theme}-{$language}.json" );
         $originalTranslations = $overridedTranslations = $translations = array();
         if( file_exists( $translationFile ) ) {
             $originalJson = file_get_contents( $translationFile );

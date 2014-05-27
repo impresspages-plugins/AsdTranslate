@@ -7,9 +7,6 @@ ipAsdTinyMceConfig = function() {
     return {
         inline: true,
         skin: 'impresspages',
-        visual_table_class: 'ipTableManagement',
-        //directionality : 'ltr', //TODO according to the current language
-        plugins: "advlist, paste, link, table",
         entity_encoding : "raw",
         menubar: false,
         statusbar: false,
@@ -23,7 +20,7 @@ ipAsdTinyMceConfig = function() {
         paste_preprocess: function(pl, o) {
             ipTinyMceConfigPastePreprocess(pl, o, new Array('quote', 'note', 'button'));
         }
-    }
+    };
 };
 
 (function($) {
@@ -32,6 +29,7 @@ ipAsdTinyMceConfig = function() {
             return this.each(function() {
                 var $this = $(this);
                 var data = $this.data('ipInlineManagementText');
+                
                 if (!data) {
                     $this.data('ipInlineManagementText', {translate: $this.data('translate'), type: $this.data('type'), name: $this.data('name'), language: $this.data('language')});
                     var translate = $this.data('ipInlineManagementText').translate;
@@ -39,6 +37,7 @@ ipAsdTinyMceConfig = function() {
                     var name = $this.data('ipInlineManagementText').name;
                     var language = $this.data('ipInlineManagementText').language;
                     var customTinyMceConfig = ipAsdTinyMceConfig();
+                    
                     customTinyMceConfig.setup = function(ed, l) {
                         ed.on('change', function(e) {
                             save($this.html(), translate, type, name, language);

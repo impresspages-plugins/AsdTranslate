@@ -1,6 +1,6 @@
 <?php
 namespace Plugin\AsdTranslate;
- 
+
 class Slot {
     public static function translate($params)
     {
