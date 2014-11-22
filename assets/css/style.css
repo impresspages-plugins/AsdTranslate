@@ -1,6 +1,6 @@
 .ipPluginAsdTranslate ul {
     list-style: none;
-    
+
 }
 .ipPluginAsdTranslate ul li.title {
     font-weight: bold;
@@ -11,4 +11,14 @@
 }
 .ipPluginAsdTranslate ul li.active a {
     background-color: #F1F1F1;
+}
+
+table.table td{
+    width: 50%;
+}
+
+table.table textarea{
+    width: 100%;
+    min-height: 60px;
+    border: 1px solid #ccc;
 }

@@ -19,7 +19,7 @@
                             <li class="<?php echo !empty( $query['plugin'] ) && $query['plugin'] == $plugin[0] ? 'active' : ''; ?>"><a href="?aa=AsdTranslate&language=<?php echo $query['language']; ?>&plugin=<?php echo $plugin[0]; ?>"><?php echo $plugin[1]; ?></a></li>
                         <?php endforeach; ?>
                     <?php endif; ?>
-                    <?php if( !empty( $themes ) ): ?> 
+                    <?php if( !empty( $themes ) ): ?>
                         <li class="title"><?php echo __( 'Themes', 'AsdTranslate' ); ?></li>
                         <?php   foreach( $themes as $theme ): ?>
                             <li class="<?php echo !empty( $query['theme'] ) && $query['theme'] == $theme ? 'active' : ''; ?>"><a href="?aa=AsdTranslate&language=<?php echo $query['language']; ?>&theme=<?php echo $theme; ?>"><?php echo $theme; ?></a></li>
@@ -43,10 +43,12 @@
                     <tbody>
                     <?php foreach( $results as $translate => $translation ): ?>
                         <tr>
-                            <td><?php echo $translate; ?></td>
+                            <td><?php echo esc($translate); ?></td>
                             <td>
                                 <?php if( empty( $writable ) ): ?>
-                                    <?php echo ipSlot( 'translate', array( 'translate' => $translate, 'translation' => $translation, 'type' => $type, 'name' => $query[$type], 'language' => $query['language'] ) ); ?>
+<!--                                    --><?php //echo ipSlot( 'translate', array( 'translate' => $translate, 'translation' => $translation, 'type' => $type, 'name' => $query[$type], 'language' => $query['language'] ) ); ?>
+
+                                    <textarea class="ipsAutosave" data-translate="<?php echo escAttr($translate) ?>" data-type="<?php echo escAttr($type) ?>" data-name="<?php echo escAttr($query[$type]) ?>" data-language="<?php echo escAttr($query['language']) ?>"><?php echo escTextarea($translation); ?></textarea>
                                 <?php else: ?>
                                     <?php echo $translation; ?>
                                 <?php endif; ?>

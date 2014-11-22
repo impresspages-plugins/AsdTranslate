@@ -5,6 +5,9 @@ namespace Plugin\AsdTranslate;
 class AdminController extends \Ip\Controller {
     public function index()
     {
+        ipAddCss('Plugin/AsdTranslate/assets/css/style.css');
+        ipAddJs('Plugin/AsdTranslate/assets/js/translate.js');
+
         $data['query'] = ipRequest()->getQuery();
         if( !empty( $data['query']['language'] ) ) {
             if( !empty( $data['query']['plugin'] ) ) {
@@ -31,11 +34,11 @@ class AdminController extends \Ip\Controller {
         }
         $data['plugins'] = Model::get_all_plugins();
         $data['themes'] = Model::get_themes();
-        
+
         $renderedHtml = ipView('view/index.php', $data )->render();
         return $renderedHtml;
     }
-    
+
     public function saveTranslation() {
         $data = ipRequest()->getPost();
         if( $data['type'] == 'theme' ) {

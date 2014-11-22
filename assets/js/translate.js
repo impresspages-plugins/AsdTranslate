@@ -1,27 +1,8 @@
 $(document).ready(function() {
     "use strict";
-    $('.ipsAsdModuleInlineManagementTranslate').ipAsdModuleInlineManagementTranslate();
+    $('.ipsAutosave').ipAsdModuleInlineManagementTranslate();
 });
 
-ipAsdTinyMceConfig = function() {
-    return {
-        inline: true,
-        skin: 'impresspages',
-        entity_encoding : "raw",
-        menubar: false,
-        statusbar: false,
-        toolbar: "undo redo",
-        force_br_newlines : false,
-        force_p_newlines : false,
-        forced_root_block : '',
-        document_base_url : ip.baseUrl,
-        remove_script_host : false,
-        relative_urls : false,
-        paste_preprocess: function(pl, o) {
-            ipTinyMceConfigPastePreprocess(pl, o, new Array('quote', 'note', 'button'));
-        }
-    };
-};
 
 (function($) {
     "use strict";
@@ -29,21 +10,23 @@ ipAsdTinyMceConfig = function() {
             return this.each(function() {
                 var $this = $(this);
                 var data = $this.data('ipInlineManagementText');
-                
+
                 if (!data) {
                     $this.data('ipInlineManagementText', {translate: $this.data('translate'), type: $this.data('type'), name: $this.data('name'), language: $this.data('language')});
                     var translate = $this.data('ipInlineManagementText').translate;
                     var type = $this.data('ipInlineManagementText').type;
                     var name = $this.data('ipInlineManagementText').name;
                     var language = $this.data('ipInlineManagementText').language;
-                    var customTinyMceConfig = ipAsdTinyMceConfig();
-                    
-                    customTinyMceConfig.setup = function(ed, l) {
-                        ed.on('change', function(e) {
-                            save($this.html(), translate, type, name, language);
-                        });
-                    };
-                    $this.tinymce(customTinyMceConfig);
+
+                    $this.on('change', function(e) {
+                        save($(this).val(), translate, type, name, language);
+                    });
+                    $this.on('focus', function(e) {
+                        $this.parent('td').append($('<a href="#" class="ipsSave">Save</a>'));
+                    });
+                    $this.on('blur', function(e) {
+                        $this.parent('td').find('.ipsSave').remove();
+                    });
                 }
             });
         }};
