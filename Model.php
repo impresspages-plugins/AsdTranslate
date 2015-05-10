@@ -90,7 +90,7 @@ class Model {
     public static function get_scan_files( $files, $name = null ) {
         $translates = array();
         if( !empty( $files ) ) {
-            $patern = '/_(?:_|e)\(\s?(?:"|\')(.*?)(?:"|\')\s?,\s?(?:"|\')'.$name.'(?:"|\')\s?(?:\s?,\s?false\s?)?\)/';
+            $patern = '/_(?:_|e)\(\s?(?:"|\')(.*?)(?:"|\')\s?,\s?(?:"|\')'.$name.'(?:"|\')\s?([^\)]*)?\)/';
             foreach( $files as $file ) {
                 $handle = @fopen($file, "r");
                 if ($handle) {
